@@ -4,22 +4,61 @@ var splitX=5;
 var splitY=5;
 var width = parseInt(boardX/splitX);
 var height = parseInt(boardY/splitY);
-var board =  getBoard();
-var pieces = getPieces();
+var table = initTable();
+$('#board').click(function(e) {
+	var box = $(e.target);
+	if(box.hasClass('piece')) {
+		var old = box.data('pos');
+		var freePos = nextToFree(old);
+		if(freePos) {
+			var newX = freePos.x;
+			var newY = freePos.y;
+			table[newX][newY]=table[old.x][old.y];
+			table[old.x][old.y]=null;
+			box.css(pos(newX,newY)).data('pos',{x:newX,y:newY});
+		}
+	}
+});
 
-for(var x = 0; x<splitX;x++) {
-	for(var y=0;y<splitY;y++) {
-		board.append(pieces.pop().css(pos(x,y)));
+function nextToFree(pos) {
+	var x=pos.x;
+	var y=pos.y;
+	var positions = [{x:x,y:y+1},{x:x+1,y:y},{x:x,y:y-1},{x:x-1,y:y}];
+	for(var i in positions) {
+		var nextX = positions[i].x;
+		var nextY = positions[i].y;
+		var freePos = getIfFree(nextX,nextY);
+		if(freePos) return freePos;
+	}
+	return null;
+}
+function getIfFree(x,y) {
+	if(x<0 || x>=splitX || y<0 || y>=splitY || table[x][y] != null) {
+		return null;
+	} else {
+		return {x:x, y:y};
 	}
 }
 function pos(slotX, slotY) { return {left:(slotX*width)+'px',top:(slotY*height)+'px'}}
 function getBoard() {return $("#board").css('width',boardX+'px').css('height',boardY+'px');}
-function piece(x,y) {
-	return $('<div>')
-	.addClass('piece')
-	.css('background-position','-'+(x*width)+'px -'+(y*height)+'px')
-	.width(width)
-	.height(height);
+
+function initTable() {
+	var board =  getBoard();
+	var pieces = getPieces();
+	var table = [];
+	for(var x = 0; x<splitX;x++) {
+		table[x]=[];
+		for(var y=0;y<splitY;y++) {
+			if(pieces.length) {
+				var box = pieces.pop().css(pos(x,y)).data('pos',{x:x,y:y});
+				board.append(box);
+				table[x][y]=box;
+			} else {
+				table[x][y]=null;
+			}
+		}
+	}
+	return table;
 }
 
 function getPieces() {
@@ -29,5 +68,12 @@ function getPieces() {
 			pieces.push(piece(x,y));
 		}
 	}
+	pieces.pop();
 	return pieces;
+}
+
+function piece(x,y) {
+	return $('<div>').addClass('piece').width(width).height(height)
+	.css('background-position','-'+(x*width)+'px -'+(y*height)+'px');
+	
 }
