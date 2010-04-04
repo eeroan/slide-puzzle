@@ -1,16 +1,26 @@
-//TODO cursor css, game reset, theme, difficulty, levels 
-init({split:4});
-var emptyCell;
-function init(opts) {
-	var board = {x:600, y:450};
-	var boxInfo = {};
-	boxInfo.grid = {x:opts.split, y:opts.split};
-	boxInfo.size = {x:divideFor('x'), y:divideFor('y')};
-	var table = getTable(board, boxInfo);
-	initClickEvent(table, boxInfo);
-	initKeyEvent(table, boxInfo);
-	function divideFor(axis) { return parseInt(board[axis] / boxInfo.grid[axis])};
+//TODO game reset, theme, difficulty, levels, high score, timer, moves 
+init({image:'Koala.jpg', split:3});
+
+function imageReady(image, callBack) {
+	setTimeout(function() {
+		if(image.width) callBack({x:image.width, y:image.height});
+		else imageReady(image, callBack);
+	}, 13);
 }
+function init(opts) {
+	var image = new Image();
+	image.src = opts.image;
+	imageReady(image, function(board) {
+		var boxInfo = {};
+		boxInfo.grid = {x:opts.split, y:opts.split};
+		boxInfo.size = {x:divideFor('x'), y:divideFor('y')};
+		boxInfo.image = opts.image;
+		var table = getTable(board, boxInfo);
+		initClickEvent(table, boxInfo);
+		initKeyEvent(table, boxInfo);
+		function divideFor(axis) { return parseInt(board[axis] / boxInfo.grid[axis])};
+	});
+	}
 
 function initKeyEvent(table, boxInfo) {
 	$(document).keyup(function(e) {
@@ -88,16 +98,16 @@ function getPieces(boxInfo) {
 	var pieces = [];
 	for(var x = 0; x < boxInfo.grid.x; x++) {
 		for(var y = 0; y < boxInfo.grid.y; y++) {
-			pieces.push(piece(x, y, boxInfo.size));
+			pieces.push(piece(x, y, boxInfo));
 		}
 	}
 	pieces.pop();
 	return pieces;
 }
 
-function piece(x,y, size) {
-	return $('<div>').addClass('piece').width(size.x).height(size.y)
-	.css('background-position','-'+(x*size.x)+'px -'+(y*size.y)+'px');
+function piece(x,y, boxInfo) {
+	return $('<div>').addClass('piece').width(boxInfo.size.x).height(boxInfo.size.y)
+	.css('background','url('+ boxInfo.image +') -'+(x*boxInfo.size.x)+'px -'+(y*boxInfo.size.y)+'px');
 }
 function pos(slot, size) { return {left:(slot.x*size.x)+'px',top:(slot.y*size.y)+'px'}}
 function getBoard(board) {return $("#board").width(board.x).height(board.y);}
