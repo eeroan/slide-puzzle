@@ -1,32 +1,37 @@
 //TODO cursor css, game reset, theme, difficulty, levels 
 init({split:4});
-
+var emptyCell;
 function init(opts) {
 	var board = {x:600, y:450};
 	var boxInfo = {};
 	boxInfo.grid = {x:opts.split, y:opts.split};
 	boxInfo.size = {x:divideFor('x'), y:divideFor('y')};
-	initClickEvent(getTable(board, boxInfo), boxInfo);
-	initKeyEvent();
+	var table = getTable(board, boxInfo);
+	initClickEvent(table, boxInfo);
+	initKeyEvent(table, boxInfo);
 	function divideFor(axis) { return parseInt(board[axis] / boxInfo.grid[axis])};
 }
 
-function initKeyEvent() {
+function initKeyEvent(table, boxInfo) {
 	$(document).keyup(function(e) {
 		var keyCodes = {LEFT:37, UP:38, RIGHT:39, DOWN:40};
+		var movableBox;
 		switch(e.keyCode) {
 			case keyCodes.LEFT:
-				
+				movableBox = {x:emptyCell.x+1, y:emptyCell.y};
 			break;
 			case keyCodes.UP:
-			
+				movableBox = {x:emptyCell.x, y:emptyCell.y+1};
 			break;
 			case keyCodes.RIGHT:
-			
+				movableBox = {x:emptyCell.x-1, y:emptyCell.y};
 			break;
 			case keyCodes.DOWN:
-			
+				movableBox = {x:emptyCell.x, y:emptyCell.y-1};
 			break;
+		}
+		if(!isOutOfBounds(movableBox, boxInfo.grid)) {
+			moveBox(movableBox, emptyCell, table, boxInfo.size);
 		}
 	});
 }
@@ -37,13 +42,19 @@ function initClickEvent(table, boxInfo) {
 			var old = box.data('pos');
 			var free = nextToFree(old, boxInfo.grid, table);
 			if(free) {
-				table[free.x][free.y] = table[old.x][old.y];
-				table[old.x][old.y] = null;
-				box.animate(pos(free, boxInfo.size)).data('pos', free);
+				moveBox(old, free, table, boxInfo.size)
 			}
 		}
 	});
 }
+function moveBox(old, free, table, size) {
+	var box = table[old.x][old.y];
+	table[free.x][free.y] = box;
+	table[old.x][old.y] = null;
+	emptyCell = $.extend({},old);
+	box.animate(pos(free, size)).data('pos', free);
+}
+
 function nextToFree(old, grid, table) {
 	var x = old.x;
 	var y = old.y;
@@ -74,6 +85,7 @@ function getTable(boardDim, boxInfo) {
 				table[x][y] = box;
 			} else {
 				table[x][y] = null;
+				emptyCell = {x:x,y:y}
 			}
 		}
 	}
