@@ -5,13 +5,18 @@ function init() {
 	var boardY = 450;
 	var splitX=5;
 	var splitY=5;
-	var width = parseInt(boardX/splitX);
-	var height = parseInt(boardY/splitY);
-	var table = initTable(boardX, boardY, splitX, splitY, width, height);
-	initClickEvent(table, width, height, splitX, splitY);
+	var boxInfo = {};
+	boxInfo.grid = {x:5,y:5};
+	boxInfo.size = {x:parseInt(boardX/splitX),y:parseInt(boardY/splitY)};
+	var table = initTable(boardX, boardY, boxInfo);
+	initClickEvent(table, boxInfo);
 }
 
-function initClickEvent(table, width, height, splitX, splitY) {
+function initClickEvent(table, boxInfo) {
+	var width = boxInfo.size.x;
+	var height = boxInfo.size.y;
+	var splitX = boxInfo.grid.x;
+	var splitY = boxInfo.grid.y;
 	$('#board').click(function(e) {
 		var box = $(e.target);
 		if(box.hasClass('piece')) {
@@ -40,7 +45,11 @@ function getIfFree(x, y, splitX, splitY, table) {
 	return (x<0 || x>=splitX || y<0 || y>=splitY || table[x][y] != null) ? null :{x:x, y:y};
 }
 
-function initTable(boardX, boardY, splitX,splitY, width,height) {
+function initTable(boardX, boardY, boxInfo) {
+	var width = boxInfo.size.x;
+	var height = boxInfo.size.y;
+	var splitX = boxInfo.grid.x;
+	var splitY = boxInfo.grid.y;
 	var board =  getBoard(boardX, boardY);
 	var pieces = getPieces(splitX, splitY, width, height);
 	var table = [];
