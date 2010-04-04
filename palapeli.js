@@ -1,8 +1,8 @@
-init();
+init({split:4});
 
-function init() {
+function init(opts) {
 	var board = {x:600,y:450};
-	var split = {x:5, y:5};
+	var split = {x:opts.split, y:opts.split};
 	var boxInfo = {};
 	boxInfo.grid = split;
 	boxInfo.size = {x:parseInt(board.x/split.x),y:parseInt(board.y/split.y)};
