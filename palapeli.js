@@ -1,6 +1,7 @@
 //TODO game reset, theme, difficulty, levels, high score, timer, moves 
 init({image:'Koala.jpg', split:3});
-
+var lastPiece;
+var emptyCell;
 function imageReady(image, callBack) {
 	setTimeout(function() {
 		if(image.width) callBack({x:image.width, y:image.height});
@@ -33,7 +34,7 @@ function initKeyEvent(table, boxInfo) {
 			case keyCodes.DOWN: movableBox = {x:emptyCell.x, y:emptyCell.y-1}; break;
 		}
 		if(!isOutOfBounds(movableBox, boxInfo.grid)) {
-			moveBox(movableBox, emptyCell, table, boxInfo.size);
+			moveBox(movableBox, emptyCell, table, boxInfo);
 		}
 	});
 }
@@ -43,20 +44,22 @@ function initClickEvent(table, boxInfo) {
 		if(box.hasClass('piece')) {
 			var from = box.data('pos');
 			var to = nextToFree(from, boxInfo.grid, table);
-			if(to) moveBox(from, to, table, boxInfo.size)
+			if(to) moveBox(from, to, table, boxInfo)
 		}
 	});
 }
-function moveBox(from, to, table, size) {
+function moveBox(from, to, table, boxInfo) {
 	var box = table[from.x][from.y];
 	table[to.x][to.y] = box;
 	table[from.x][from.y] = null;
 	emptyCell = from;
-	box.animate(pos(to, size), 300, validate).data('pos', to);
-	function validate() { if(isDone(table)) gameCompleted();}
+	box.animate(pos(to, boxInfo.size), 300, validate).data('pos', to);
+	function validate() { if(isDone(table)) gameCompleted(boxInfo);}
 }
-function gameCompleted() {
-	alert('Game Completed!');
+function gameCompleted(boxInfo) {
+	var end = boxInfo.grid;
+	lastPiece.css(pos({x:end.x-1,y:end.y-1}, boxInfo.size));
+	$('#board').append(lastPiece);
 }
 function isDone(table) {
 	for(var x in table) {
@@ -116,7 +119,7 @@ function getPieces(boxInfo) {
 			pieces.push(piece(x, y, boxInfo));
 		}
 	}
-	pieces.pop();
+	lastPiece = pieces.pop();
 	return pieces;
 }
 
