@@ -17,18 +17,10 @@ function initKeyEvent(table, boxInfo) {
 		var keyCodes = {LEFT:37, UP:38, RIGHT:39, DOWN:40};
 		var movableBox;
 		switch(e.keyCode) {
-			case keyCodes.LEFT:
-				movableBox = {x:emptyCell.x+1, y:emptyCell.y};
-			break;
-			case keyCodes.UP:
-				movableBox = {x:emptyCell.x, y:emptyCell.y+1};
-			break;
-			case keyCodes.RIGHT:
-				movableBox = {x:emptyCell.x-1, y:emptyCell.y};
-			break;
-			case keyCodes.DOWN:
-				movableBox = {x:emptyCell.x, y:emptyCell.y-1};
-			break;
+			case keyCodes.LEFT: movableBox = {x:emptyCell.x+1, y:emptyCell.y}; break;
+			case keyCodes.UP: movableBox = {x:emptyCell.x, y:emptyCell.y+1}; break;
+			case keyCodes.RIGHT: movableBox = {x:emptyCell.x-1, y:emptyCell.y}; break;
+			case keyCodes.DOWN: movableBox = {x:emptyCell.x, y:emptyCell.y-1}; break;
 		}
 		if(!isOutOfBounds(movableBox, boxInfo.grid)) {
 			moveBox(movableBox, emptyCell, table, boxInfo.size);
@@ -39,20 +31,20 @@ function initClickEvent(table, boxInfo) {
 	$('#board').click(function(e) {
 		var box = $(e.target);
 		if(box.hasClass('piece')) {
-			var old = box.data('pos');
-			var free = nextToFree(old, boxInfo.grid, table);
-			if(free) {
-				moveBox(old, free, table, boxInfo.size)
+			var from = box.data('pos');
+			var to = nextToFree(from, boxInfo.grid, table);
+			if(to) {
+				moveBox(from, to, table, boxInfo.size)
 			}
 		}
 	});
 }
-function moveBox(old, free, table, size) {
-	var box = table[old.x][old.y];
-	table[free.x][free.y] = box;
-	table[old.x][old.y] = null;
-	emptyCell = $.extend({},old);
-	box.animate(pos(free, size)).data('pos', free);
+function moveBox(from, to, table, size) {
+	var box = table[from.x][from.y];
+	table[to.x][to.y] = box;
+	table[from.x][from.y] = null;
+	emptyCell = from;
+	box.animate(pos(to, size), 300).data('pos', to);
 }
 
 function nextToFree(old, grid, table) {
