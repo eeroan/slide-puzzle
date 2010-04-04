@@ -6,8 +6,7 @@ function init(opts) {
 	var boxInfo = {};
 	boxInfo.grid = split;
 	boxInfo.size = {x:divideFor('x'), y:divideFor('y')};
-	var table = initTable(board, boxInfo);
-	initClickEvent(table, boxInfo);
+	initClickEvent(getTable(board, boxInfo), boxInfo);
 	function divideFor(axis) { return parseInt(board[axis] / split[axis])};
 }
 
@@ -30,8 +29,7 @@ function nextToFree(old, grid, table) {
 	var y = old.y;
 	var sides = [{x:x, y:y+1}, {x:x+1, y:y}, {x:x, y:y-1}, {x:x-1, y:y}];
 	for(var i in sides) {
-		var side = sides[i];
-		var freePos = getIfFree(side, grid, table);
+		var freePos = getIfFree(sides[i], grid, table);
 		if(freePos) return freePos;
 	}
 	return null;
@@ -42,7 +40,7 @@ function getIfFree(side, grid, table) {
 	return (x < 0 || x >= grid.x || y < 0 || y >= grid.y || table[x][y] != null) ? null :{x:x, y:y};
 }
 
-function initTable(boardDim, boxInfo) {
+function getTable(boardDim, boxInfo) {
 	var board =  getBoard(boardDim);
 	var pieces = getPieces(boxInfo);
 	var table = [];
