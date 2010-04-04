@@ -1,63 +1,56 @@
 init();
 
 function init() {
-	var boardX = 600;
-	var boardY = 450;
-	var splitX=5;
-	var splitY=5;
+	var board = {x:600,y:450};
+	var split = {x:5, y:5};
 	var boxInfo = {};
-	boxInfo.grid = {x:5,y:5};
-	boxInfo.size = {x:parseInt(boardX/splitX),y:parseInt(boardY/splitY)};
-	var table = initTable(boardX, boardY, boxInfo);
+	boxInfo.grid = split;
+	boxInfo.size = {x:parseInt(board.x/split.x),y:parseInt(board.y/split.y)};
+	var table = initTable(board, boxInfo);
 	initClickEvent(table, boxInfo);
 }
 
 function initClickEvent(table, boxInfo) {
-	var width = boxInfo.size.x;
-	var height = boxInfo.size.y;
-	var splitX = boxInfo.grid.x;
-	var splitY = boxInfo.grid.y;
 	$('#board').click(function(e) {
 		var box = $(e.target);
 		if(box.hasClass('piece')) {
 			var old = box.data('pos');
-			var freePos = nextToFree(old.x, old.y, splitX, splitY, table);
-			if(freePos) {
-				var newX = freePos.x;
-				var newY = freePos.y;
-				table[newX][newY]=table[old.x][old.y];
+			var free = nextToFree(old, boxInfo.grid, table);
+			if(free) {
+				table[free.x][free.y]=table[old.x][old.y];
 				table[old.x][old.y]=null;
-				box.animate(pos(newX,newY, width, height)).data('pos',{x:newX,y:newY});
+				box.animate(pos(free, boxInfo.size)).data('pos',free);
 			}
 		}
 	});
 }
-function nextToFree(x, y, splitX, splitY, table) {
+function nextToFree(old, grid, table) {
+	var x = old.x;
+	var y = old.y;
 	var sides = [{x:x,y:y+1},{x:x+1,y:y},{x:x,y:y-1},{x:x-1,y:y}];
 	for(var i in sides) {
 		var side = sides[i];
-		var freePos = getIfFree(side.x, side.y, splitX, splitY, table);
+		var freePos = getIfFree(side, grid, table);
 		if(freePos) return freePos;
 	}
 	return null;
 }
-function getIfFree(x, y, splitX, splitY, table) { 
-	return (x<0 || x>=splitX || y<0 || y>=splitY || table[x][y] != null) ? null :{x:x, y:y};
+function getIfFree(side, grid, table) {
+	var x = side.x;
+	var y = side.y;
+	return (x<0 || x>=grid.x || y<0 || y>=grid.y || table[x][y] != null) ? null :{x:x, y:y};
 }
 
-function initTable(boardX, boardY, boxInfo) {
-	var width = boxInfo.size.x;
-	var height = boxInfo.size.y;
-	var splitX = boxInfo.grid.x;
-	var splitY = boxInfo.grid.y;
-	var board =  getBoard(boardX, boardY);
-	var pieces = getPieces(splitX, splitY, width, height);
+function initTable(boardDim, boxInfo) {
+	var board =  getBoard(boardDim);
+	var pieces = getPieces(boxInfo);
 	var table = [];
-	for(var x = 0; x<splitX;x++) {
+	for(var x = 0; x<boxInfo.grid.x;x++) {
 		table[x]=[];
-		for(var y=0;y<splitY;y++) {
+		for(var y=0;y<boxInfo.grid.y;y++) {
 			if(pieces.length) {
-				var box = pieces.pop().css(pos(x,y,width,height)).data('pos',{x:x,y:y});
+				var slot = {x:x, y:y};
+				var box = pieces.pop().css(pos(slot,boxInfo.size)).data('pos',slot);
 				board.append(box);
 				table[x][y]=box;
 			} else {
@@ -68,20 +61,20 @@ function initTable(boardX, boardY, boxInfo) {
 	return table;
 }
 
-function getPieces(splitX, splitY, width, height) {
+function getPieces(boxInfo) {
 	var pieces = [];
-	for(var x = 0; x<splitX;x++) {
-		for(var y = 0; y<splitY;y++) {
-			pieces.push(piece(x,y, width, height));
+	for(var x = 0; x<boxInfo.grid.x;x++) {
+		for(var y = 0; y<boxInfo.grid.y;y++) {
+			pieces.push(piece(x,y, boxInfo.size));
 		}
 	}
 	pieces.pop();
 	return pieces;
 }
 
-function piece(x,y, width, height) {
-	return $('<div>').addClass('piece').width(width).height(height)
-	.css('background-position','-'+(x*width)+'px -'+(y*height)+'px');
+function piece(x,y, size) {
+	return $('<div>').addClass('piece').width(size.x).height(size.y)
+	.css('background-position','-'+(x*size.x)+'px -'+(y*size.y)+'px');
 }
-function pos(slotX, slotY, width, height) { return {left:(slotX*width)+'px',top:(slotY*height)+'px'}}
-function getBoard(boardX, boardY) {return $("#board").width(boardX).height(boardY);}
+function pos(slot, size) { return {left:(slot.x*size.x)+'px',top:(slot.y*size.y)+'px'}}
+function getBoard(board) {return $("#board").width(board.x).height(board.y);}
