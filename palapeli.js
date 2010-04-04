@@ -1,3 +1,4 @@
+//TODO cursor css, game reset, theme, difficulty, levels 
 init({split:4});
 
 function init(opts) {
@@ -6,9 +7,29 @@ function init(opts) {
 	boxInfo.grid = {x:opts.split, y:opts.split};
 	boxInfo.size = {x:divideFor('x'), y:divideFor('y')};
 	initClickEvent(getTable(board, boxInfo), boxInfo);
+	initKeyEvent();
 	function divideFor(axis) { return parseInt(board[axis] / boxInfo.grid[axis])};
 }
 
+function initKeyEvent() {
+	$(document).keyup(function(e) {
+		var keyCodes = {LEFT:37, UP:38, RIGHT:39, DOWN:40};
+		switch(e.keyCode) {
+			case keyCodes.LEFT:
+				
+			break;
+			case keyCodes.UP:
+			
+			break;
+			case keyCodes.RIGHT:
+			
+			break;
+			case keyCodes.DOWN:
+			
+			break;
+		}
+	});
+}
 function initClickEvent(table, boxInfo) {
 	$('#board').click(function(e) {
 		var box = $(e.target);
@@ -34,11 +55,11 @@ function nextToFree(old, grid, table) {
 	return null;
 }
 function getIfFree(side, grid, table) {
-	var x = side.x;
-	var y = side.y;
-	return (x < 0 || x >= grid.x || y < 0 || y >= grid.y || table[x][y] != null) ? null :{x:x, y:y};
+	return (isOutOfBounds(side, grid) || table[side.x][side.y] != null) ? null :{x:side.x, y:side.y};
 }
-
+function isOutOfBounds(box, grid) {
+	return box.x < 0 || box.x >= grid.x || box.y < 0 || box.y >= grid.y;
+}
 function getTable(boardDim, boxInfo) {
 	var board =  getBoard(boardDim);
 	var pieces = getPieces(boxInfo);
