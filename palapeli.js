@@ -2,12 +2,11 @@ init({split:4});
 
 function init(opts) {
 	var board = {x:600, y:450};
-	var split = {x:opts.split, y:opts.split};
 	var boxInfo = {};
-	boxInfo.grid = split;
+	boxInfo.grid = {x:opts.split, y:opts.split};
 	boxInfo.size = {x:divideFor('x'), y:divideFor('y')};
 	initClickEvent(getTable(board, boxInfo), boxInfo);
-	function divideFor(axis) { return parseInt(board[axis] / split[axis])};
+	function divideFor(axis) { return parseInt(board[axis] / boxInfo.grid[axis])};
 }
 
 function initClickEvent(table, boxInfo) {
