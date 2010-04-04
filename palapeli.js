@@ -43,9 +43,7 @@ function initClickEvent(table, boxInfo) {
 		if(box.hasClass('piece')) {
 			var from = box.data('pos');
 			var to = nextToFree(from, boxInfo.grid, table);
-			if(to) {
-				moveBox(from, to, table, boxInfo.size)
-			}
+			if(to) moveBox(from, to, table, boxInfo.size)
 		}
 	});
 }
@@ -54,9 +52,26 @@ function moveBox(from, to, table, size) {
 	table[to.x][to.y] = box;
 	table[from.x][from.y] = null;
 	emptyCell = from;
-	box.animate(pos(to, size), 300).data('pos', to);
+	box.animate(pos(to, size), 300, validate).data('pos', to);
+	function validate() { if(isDone(table)) gameCompleted();}
 }
-
+function gameCompleted() {
+	alert('Game Completed!');
+}
+function isDone(table) {
+	for(var x in table) {
+		for(var y in table[x]) {
+			var slot = table[x][y];
+			if(slot) {
+				var box = slot.data('origPos');
+				if(box.x != x || box.y != y) {
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
 function nextToFree(old, grid, table) {
 	var x = old.x;
 	var y = old.y;
@@ -107,7 +122,8 @@ function getPieces(boxInfo) {
 
 function piece(x,y, boxInfo) {
 	return $('<div>').addClass('piece').width(boxInfo.size.x).height(boxInfo.size.y)
-	.css('background','url('+ boxInfo.image +') -'+(x*boxInfo.size.x)+'px -'+(y*boxInfo.size.y)+'px');
+	.css('background','url('+ boxInfo.image +') -'+(x*boxInfo.size.x)+'px -'+(y*boxInfo.size.y)+'px')
+	.data('origPos', {x:x, y:y});
 }
 function pos(slot, size) { return {left:(slot.x*size.x)+'px',top:(slot.y*size.y)+'px'}}
 function getBoard(board) {return $("#board").width(board.x).height(board.y);}
