@@ -1,13 +1,14 @@
 init({split:4});
 
 function init(opts) {
-	var board = {x:600,y:450};
+	var board = {x:600, y:450};
 	var split = {x:opts.split, y:opts.split};
 	var boxInfo = {};
 	boxInfo.grid = split;
-	boxInfo.size = {x:parseInt(board.x/split.x),y:parseInt(board.y/split.y)};
+	boxInfo.size = {x:divideFor('x'), y:divideFor('y')};
 	var table = initTable(board, boxInfo);
 	initClickEvent(table, boxInfo);
+	function divideFor(axis) { return parseInt(board[axis] / split[axis])};
 }
 
 function initClickEvent(table, boxInfo) {
@@ -17,9 +18,9 @@ function initClickEvent(table, boxInfo) {
 			var old = box.data('pos');
 			var free = nextToFree(old, boxInfo.grid, table);
 			if(free) {
-				table[free.x][free.y]=table[old.x][old.y];
-				table[old.x][old.y]=null;
-				box.animate(pos(free, boxInfo.size)).data('pos',free);
+				table[free.x][free.y] = table[old.x][old.y];
+				table[old.x][old.y] = null;
+				box.animate(pos(free, boxInfo.size)).data('pos', free);
 			}
 		}
 	});
@@ -27,7 +28,7 @@ function initClickEvent(table, boxInfo) {
 function nextToFree(old, grid, table) {
 	var x = old.x;
 	var y = old.y;
-	var sides = [{x:x,y:y+1},{x:x+1,y:y},{x:x,y:y-1},{x:x-1,y:y}];
+	var sides = [{x:x, y:y+1}, {x:x+1, y:y}, {x:x, y:y-1}, {x:x-1, y:y}];
 	for(var i in sides) {
 		var side = sides[i];
 		var freePos = getIfFree(side, grid, table);
@@ -38,23 +39,23 @@ function nextToFree(old, grid, table) {
 function getIfFree(side, grid, table) {
 	var x = side.x;
 	var y = side.y;
-	return (x<0 || x>=grid.x || y<0 || y>=grid.y || table[x][y] != null) ? null :{x:x, y:y};
+	return (x < 0 || x >= grid.x || y < 0 || y >= grid.y || table[x][y] != null) ? null :{x:x, y:y};
 }
 
 function initTable(boardDim, boxInfo) {
 	var board =  getBoard(boardDim);
 	var pieces = getPieces(boxInfo);
 	var table = [];
-	for(var x = 0; x<boxInfo.grid.x;x++) {
-		table[x]=[];
-		for(var y=0;y<boxInfo.grid.y;y++) {
+	for(var x = 0; x < boxInfo.grid.x; x++) {
+		table[x] = [];
+		for(var y = 0; y < boxInfo.grid.y; y++) {
 			if(pieces.length) {
 				var slot = {x:x, y:y};
-				var box = pieces.pop().css(pos(slot,boxInfo.size)).data('pos',slot);
+				var box = pieces.pop().css(pos(slot, boxInfo.size)).data('pos', slot);
 				board.append(box);
-				table[x][y]=box;
+				table[x][y] = box;
 			} else {
-				table[x][y]=null;
+				table[x][y] = null;
 			}
 		}
 	}
@@ -63,9 +64,9 @@ function initTable(boardDim, boxInfo) {
 
 function getPieces(boxInfo) {
 	var pieces = [];
-	for(var x = 0; x<boxInfo.grid.x;x++) {
-		for(var y = 0; y<boxInfo.grid.y;y++) {
-			pieces.push(piece(x,y, boxInfo.size));
+	for(var x = 0; x < boxInfo.grid.x; x++) {
+		for(var y = 0; y < boxInfo.grid.y; y++) {
+			pieces.push(piece(x, y, boxInfo.size));
 		}
 	}
 	pieces.pop();
