@@ -1,0 +1,4 @@
+
+A Slide Puzzle game made with jQuery
+
+"Play Here!":http://eeroan.github.com/slide-puzzle/slide-puzzle.html

@@ -72,7 +72,7 @@
       <file leaf-file-name="slide-puzzle.css" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/slide-puzzle.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="1" selection-start="99" selection-end="99" vertical-scroll-proportion="0.0">
+            <state line="9" column="4" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -81,7 +81,16 @@
       <file leaf-file-name="slide-puzzle.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/slide-puzzle.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="49" column="25" selection-start="1590" selection-end="1601" vertical-scroll-proportion="-0.9068493">
+            <state line="71" column="2" selection-start="2166" selection-end="2166" vertical-scroll-proportion="0.96712327">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README.textile" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/README.textile">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="4" column="0" selection-start="108" selection-end="108" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -98,6 +107,7 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/slide-puzzle.html" />
+        <option value="$PROJECT_DIR$/README.textile" />
         <option value="$PROJECT_DIR$/slide-puzzle.css" />
         <option value="$PROJECT_DIR$/slide-puzzle.js" />
       </list>
@@ -322,6 +332,20 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/README.textile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="0" selection-start="108" selection-end="108" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/slide-puzzle.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="4" selection-start="105" selection-end="105" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/slide-puzzle.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="9" column="62" selection-start="323" selection-end="323" vertical-scroll-proportion="-5.6842103">
@@ -329,16 +353,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/slide-puzzle.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="1" selection-start="99" selection-end="99" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/slide-puzzle.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="49" column="25" selection-start="1590" selection-end="1601" vertical-scroll-proportion="-0.9068493">
+        <state line="71" column="2" selection-start="2166" selection-end="2166" vertical-scroll-proportion="0.96712327">
           <folding />
         </state>
       </provider>

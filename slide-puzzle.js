@@ -1,5 +1,5 @@
 //TODO game reset, theme, difficulty, levels, high score, timer, moves 
-var lastPiece;
+var lastBox;
 var emptyCell;
 
 init({image:'Koala.jpg', split:3});
@@ -48,7 +48,7 @@ function initKeyEvent(table, boxInfo) {
 function initClickEvent(table, boxInfo) {
   getBoard().click(function(e) {
     var box = $(e.target);
-    if (box.hasClass('piece')) {
+    if (box.hasClass('box')) {
       var from = box.data('pos');
       var to = findNextToFree(from, boxInfo.gridSize, table);
       if (to) moveBox(from, to, table, boxInfo)
@@ -69,9 +69,9 @@ function moveBox(from, to, table, boxInfo) {
 
 function gameCompleted(boxInfo) {
   var end = boxInfo.gridSize;
-  lastPiece.css(pos({x:end.x - 1,y:end.y - 1}, boxInfo.boxSize)).hide();
-  getBoard().append(lastPiece);
-  lastPiece.fadeIn(2000, function() {
+  lastBox.css(pos({x:end.x - 1,y:end.y - 1}, boxInfo.boxSize)).hide();
+  getBoard().append(lastBox);
+  lastBox.fadeIn(2000, function() {
     alert("Congratulations! Play again?");
     document.location = document.location.href;
   });
@@ -115,14 +115,14 @@ function isOutOfBounds(box, grid) {
 
 function createTable(boardDim, boxInfo) {
   var board = getBoard(boardDim).width(boardDim.x).height(boardDim.y);
-  var pieces = getBoxesExceptLast(boxInfo);
+  var boxes = getBoxesExceptLast(boxInfo);
   var table = [];
   for (var x = 0; x < boxInfo.gridSize.x; x++) {
     table[x] = [];
     for (var y = 0; y < boxInfo.gridSize.y; y++) {
-      if (pieces.length) {
+      if (boxes.length) {
         var slot = {x:x, y:y};
-        var box = pieces.pop().css(pos(slot, boxInfo.boxSize)).data('pos', slot);
+        var box = boxes.pop().css(pos(slot, boxInfo.boxSize)).data('pos', slot);
         board.append(box);
         table[x][y] = box;
       } else {
@@ -135,18 +135,18 @@ function createTable(boardDim, boxInfo) {
 }
 
 function getBoxesExceptLast(boxInfo) {
-  var pieces = [];
+  var boxes = [];
   for (var x = 0; x < boxInfo.gridSize.x; x++) {
     for (var y = 0; y < boxInfo.gridSize.y; y++) {
-      pieces.push(piece(x, y, boxInfo));
+      boxes.push(createBox(x, y, boxInfo));
     }
   }
-  lastPiece = pieces.pop();
-  return pieces;
+  lastBox = boxes.pop();
+  return boxes;
 }
 
-function piece(x, y, boxInfo) {
-  return $('<div>').addClass('piece').width(boxInfo.boxSize.x).height(boxInfo.boxSize.y)
+function createBox(x, y, boxInfo) {
+  return $('<div>').addClass('box').width(boxInfo.boxSize.x).height(boxInfo.boxSize.y)
     .css('background', 'url(' + boxInfo.image + ') -' + (x * boxInfo.boxSize.x) + 'px -' + (y * boxInfo.boxSize.y) + 'px')
     .data('origPos', {x:x, y:y});
 }
