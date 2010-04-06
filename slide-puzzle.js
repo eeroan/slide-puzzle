@@ -19,7 +19,7 @@ function init(opts) {
     boxInfo.grid = {x:opts.split, y:opts.split};
     boxInfo.size = {x:divideFor('x'), y:divideFor('y')};
     boxInfo.image = opts.image;
-    var table = getTable(board, boxInfo);
+    var table = createTable(board, boxInfo);
     initClickEvent(table, boxInfo);
     initKeyEvent(table, boxInfo);
     function divideFor(axis) {
@@ -37,6 +37,7 @@ function initKeyEvent(table, boxInfo) {
       case keyCodes.UP: movableBox = {x:emptyCell.x, y:emptyCell.y + 1}; break;
       case keyCodes.RIGHT: movableBox = {x:emptyCell.x - 1, y:emptyCell.y}; break;
       case keyCodes.DOWN: movableBox = {x:emptyCell.x, y:emptyCell.y - 1}; break;
+      default: return;
     }
     if (!isOutOfBounds(movableBox, boxInfo.grid)) {
       moveBox(movableBox, emptyCell, table, boxInfo);
@@ -45,7 +46,7 @@ function initKeyEvent(table, boxInfo) {
 }
 
 function initClickEvent(table, boxInfo) {
-  $('#board').click(function(e) {
+  getBoard().click(function(e) {
     var box = $(e.target);
     if (box.hasClass('piece')) {
       var from = box.data('pos');
@@ -69,7 +70,9 @@ function moveBox(from, to, table, boxInfo) {
 function gameCompleted(boxInfo) {
   var end = boxInfo.grid;
   lastPiece.css(pos({x:end.x - 1,y:end.y - 1}, boxInfo.size));
-  $('#board').append(lastPiece);
+  getBoard().append(lastPiece);
+  alert("Congratulations! Play again?");
+  document.location = document.location.href;
 }
 
 function isDone(table) {
@@ -97,23 +100,19 @@ function nextToFree(old, grid, table) {
     {x:x - 1, y:y}
   ];
   for (var i in sides) {
-    var freePos = getIfFree(sides[i], grid, table);
-    if (freePos) return freePos;
+    var side = sides[i];
+    if(!isOutOfBounds(side, grid) && table[side.x][side.y] == null) return side;
   }
   return null;
-}
-
-function getIfFree(side, grid, table) {
-  return (isOutOfBounds(side, grid) || table[side.x][side.y] != null) ? null : {x:side.x, y:side.y};
 }
 
 function isOutOfBounds(box, grid) {
   return box.x < 0 || box.x >= grid.x || box.y < 0 || box.y >= grid.y;
 }
 
-function getTable(boardDim, boxInfo) {
-  var board = getBoard(boardDim);
-  var pieces = getPieces(boxInfo);
+function createTable(boardDim, boxInfo) {
+  var board = getBoard(boardDim).width(boardDim.x).height(boardDim.y);
+  var pieces = getBoxesExceptLast(boxInfo);
   var table = [];
   for (var x = 0; x < boxInfo.grid.x; x++) {
     table[x] = [];
@@ -132,7 +131,7 @@ function getTable(boardDim, boxInfo) {
   return table;
 }
 
-function getPieces(boxInfo) {
+function getBoxesExceptLast(boxInfo) {
   var pieces = [];
   for (var x = 0; x < boxInfo.grid.x; x++) {
     for (var y = 0; y < boxInfo.grid.y; y++) {
@@ -154,5 +153,5 @@ function pos(slot, size) {
 }
 
 function getBoard(board) {
-  return $("#board").width(board.x).height(board.y);
+  return $('#board');
 }
