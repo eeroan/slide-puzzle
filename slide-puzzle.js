@@ -4,26 +4,26 @@ var emptyCell;
 
 init({image:'Koala.jpg', split:3});
 
-function imageReady(image, callBack) {
+function afterImageIsLoaded(image, callBack) {
   setTimeout(function() {
     if (image.width) callBack({x:image.width, y:image.height});
-    else imageReady(image, callBack);
+    else afterImageIsLoaded(image, callBack);
   }, 13);
 }
 
 function init(opts) {
   var image = new Image();
   image.src = opts.image;
-  imageReady(image, function(board) {
+  afterImageIsLoaded(image, function(board) {
     var boxInfo = {};
-    boxInfo.grid = {x:opts.split, y:opts.split};
-    boxInfo.size = {x:divideFor('x'), y:divideFor('y')};
+    boxInfo.gridSize = {x:opts.split, y:opts.split};
+    boxInfo.boxSize = {x:divideFor('x'), y:divideFor('y')};
     boxInfo.image = opts.image;
     var table = createTable(board, boxInfo);
     initClickEvent(table, boxInfo);
     initKeyEvent(table, boxInfo);
     function divideFor(axis) {
-      return parseInt(board[axis] / boxInfo.grid[axis])
+      return parseInt(board[axis] / boxInfo.gridSize[axis])
     }
   });
 }
@@ -39,7 +39,7 @@ function initKeyEvent(table, boxInfo) {
       case keyCodes.DOWN: movableBox = {x:emptyCell.x, y:emptyCell.y - 1}; break;
       default: return;
     }
-    if (!isOutOfBounds(movableBox, boxInfo.grid)) {
+    if (!isOutOfBounds(movableBox, boxInfo.gridSize)) {
       moveBox(movableBox, emptyCell, table, boxInfo);
     }
   });
@@ -50,7 +50,7 @@ function initClickEvent(table, boxInfo) {
     var box = $(e.target);
     if (box.hasClass('piece')) {
       var from = box.data('pos');
-      var to = nextToFree(from, boxInfo.grid, table);
+      var to = findNextToFree(from, boxInfo.gridSize, table);
       if (to) moveBox(from, to, table, boxInfo)
     }
   });
@@ -61,18 +61,20 @@ function moveBox(from, to, table, boxInfo) {
   table[to.x][to.y] = box;
   table[from.x][from.y] = null;
   emptyCell = from;
-  box.animate(pos(to, boxInfo.size), 300, validate).data('pos', to);
+  box.animate(pos(to, boxInfo.boxSize), 300, validate).data('pos', to);
   function validate() {
     if (isDone(table)) gameCompleted(boxInfo);
   }
 }
 
 function gameCompleted(boxInfo) {
-  var end = boxInfo.grid;
-  lastPiece.css(pos({x:end.x - 1,y:end.y - 1}, boxInfo.size));
+  var end = boxInfo.gridSize;
+  lastPiece.css(pos({x:end.x - 1,y:end.y - 1}, boxInfo.boxSize)).hide();
   getBoard().append(lastPiece);
-  alert("Congratulations! Play again?");
-  document.location = document.location.href;
+  lastPiece.fadeIn(2000, function() {
+    alert("Congratulations! Play again?");
+    document.location = document.location.href;
+  });
 }
 
 function isDone(table) {
@@ -90,7 +92,7 @@ function isDone(table) {
   return true;
 }
 
-function nextToFree(old, grid, table) {
+function findNextToFree(old, grid, table) {
   var x = old.x;
   var y = old.y;
   var sides = [
@@ -99,6 +101,7 @@ function nextToFree(old, grid, table) {
     {x:x, y:y - 1},
     {x:x - 1, y:y}
   ];
+
   for (var i in sides) {
     var side = sides[i];
     if(!isOutOfBounds(side, grid) && table[side.x][side.y] == null) return side;
@@ -114,12 +117,12 @@ function createTable(boardDim, boxInfo) {
   var board = getBoard(boardDim).width(boardDim.x).height(boardDim.y);
   var pieces = getBoxesExceptLast(boxInfo);
   var table = [];
-  for (var x = 0; x < boxInfo.grid.x; x++) {
+  for (var x = 0; x < boxInfo.gridSize.x; x++) {
     table[x] = [];
-    for (var y = 0; y < boxInfo.grid.y; y++) {
+    for (var y = 0; y < boxInfo.gridSize.y; y++) {
       if (pieces.length) {
         var slot = {x:x, y:y};
-        var box = pieces.pop().css(pos(slot, boxInfo.size)).data('pos', slot);
+        var box = pieces.pop().css(pos(slot, boxInfo.boxSize)).data('pos', slot);
         board.append(box);
         table[x][y] = box;
       } else {
@@ -133,8 +136,8 @@ function createTable(boardDim, boxInfo) {
 
 function getBoxesExceptLast(boxInfo) {
   var pieces = [];
-  for (var x = 0; x < boxInfo.grid.x; x++) {
-    for (var y = 0; y < boxInfo.grid.y; y++) {
+  for (var x = 0; x < boxInfo.gridSize.x; x++) {
+    for (var y = 0; y < boxInfo.gridSize.y; y++) {
       pieces.push(piece(x, y, boxInfo));
     }
   }
@@ -143,8 +146,8 @@ function getBoxesExceptLast(boxInfo) {
 }
 
 function piece(x, y, boxInfo) {
-  return $('<div>').addClass('piece').width(boxInfo.size.x).height(boxInfo.size.y)
-    .css('background', 'url(' + boxInfo.image + ') -' + (x * boxInfo.size.x) + 'px -' + (y * boxInfo.size.y) + 'px')
+  return $('<div>').addClass('piece').width(boxInfo.boxSize.x).height(boxInfo.boxSize.y)
+    .css('background', 'url(' + boxInfo.image + ') -' + (x * boxInfo.boxSize.x) + 'px -' + (y * boxInfo.boxSize.y) + 'px')
     .data('origPos', {x:x, y:y});
 }
 
