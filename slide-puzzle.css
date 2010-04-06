@@ -1,2 +1,13 @@
-#board {background:#ccc; position:relative;}
-.piece {background-repeat:no-repeat;position:absolute;}
+body {
+  font-family: "Tahoma", sans-serif;
+}
+
+#board {
+  background: #ccc;
+  position: relative;
+}
+
+.piece {
+  background-repeat: no-repeat;
+  position: absolute;
+}
