@@ -1,5 +1,4 @@
-!http://www.laughingpanda.org/~eeroan/calendar.png!
 
 A Slid Puzzle game made with jQuery
 
-"Play Here!":eeroan.github.com/slide-puzzle/slide-puzzle.html
+"Play Here!":http://eeroan.github.com/slide-puzzle/slide-puzzle.html
