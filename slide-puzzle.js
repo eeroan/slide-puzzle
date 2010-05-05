@@ -30,17 +30,19 @@ function init(opts) {
 
 function initKeyEvent(table, boxInfo) {
   $(document).keyup(function(e) {
-    var keyCodes = {LEFT:37, UP:38, RIGHT:39, DOWN:40};
-    var movableBox;
-    switch (e.keyCode) {
-      case keyCodes.LEFT: movableBox = {x:emptyCell.x + 1, y:emptyCell.y}; break;
-      case keyCodes.UP: movableBox = {x:emptyCell.x, y:emptyCell.y + 1}; break;
-      case keyCodes.RIGHT: movableBox = {x:emptyCell.x - 1, y:emptyCell.y}; break;
-      case keyCodes.DOWN: movableBox = {x:emptyCell.x, y:emptyCell.y - 1}; break;
-      default: return;
-    }
-    if (!isOutOfBounds(movableBox, boxInfo.gridSize)) {
+    var movableBox = getMovableBox(e.keyCode);
+    if (movableBox && !isOutOfBounds(movableBox, boxInfo.gridSize)) {
       moveBox(movableBox, emptyCell, table, boxInfo);
+    }
+    function getMovableBox(code) {
+      var keyCodes = {LEFT:37, UP:38, RIGHT:39, DOWN:40};
+      switch (code) {
+        case keyCodes.LEFT: return {x:emptyCell.x + 1, y:emptyCell.y};
+        case keyCodes.UP: return {x:emptyCell.x, y:emptyCell.y + 1};
+        case keyCodes.RIGHT: return {x:emptyCell.x - 1, y:emptyCell.y};
+        case keyCodes.DOWN: return {x:emptyCell.x, y:emptyCell.y - 1};
+        default: return null;
+      }
     }
   });
 }
