@@ -1,4 +1,4 @@
-//TODO game reset, theme, difficulty, levels, high score, timer, moves, mouse over
+//TODO theme, difficulty, levels, high score, timer, moves, mouse over
 var emptyCell;
 
 init({image:'Koala.jpg', split:3});
@@ -141,9 +141,11 @@ function getBoxes(boxInfo) {
 }
 
 function createBox(x, y, boxInfo) {
-  return $('<div>').addClass('box').width(boxInfo.boxSize.x).height(boxInfo.boxSize.y)
-    .css('background', 'url(' + boxInfo.image + ') -' + (x * boxInfo.boxSize.x) + 'px -' + (y * boxInfo.boxSize.y) + 'px')
-    .data('origPos', {x:x, y:y});
+  with(boxInfo) {
+    return $('<div>').addClass('box').width(boxSize.x).height(boxSize.y)
+      .css('background', 'url(' + image + ') -' + (x * boxSize.x) + 'px -' + (y * boxSize.y) + 'px')
+      .data('origPos', {x:x, y:y});
+  }
 }
 
 function pos(slot, size) {
