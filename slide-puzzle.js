@@ -34,15 +34,15 @@ function initKeyEvent(table, boxInfo) {
     if (movableBox && !isOutOfBounds(movableBox, boxInfo.gridSize)) {
       moveBox(movableBox, emptyCell, table, boxInfo);
     }
-    function getMovableBox(code) {
-      var keyCodes = {LEFT:37, UP:38, RIGHT:39, DOWN:40};
-      switch (code) {
-        case keyCodes.LEFT: return {x:emptyCell.x + 1, y:emptyCell.y};
-        case keyCodes.UP: return {x:emptyCell.x, y:emptyCell.y + 1};
-        case keyCodes.RIGHT: return {x:emptyCell.x - 1, y:emptyCell.y};
-        case keyCodes.DOWN: return {x:emptyCell.x, y:emptyCell.y - 1};
-        default: return null;
-      }
+    function getMovableBox(key) {
+      var keyCodes = {37:'LEFT', 38:'UP', 39:'RIGHT', 40:'DOWN'};
+      var directions = {
+        LEFT: {x:emptyCell.x + 1, y:emptyCell.y},
+        UP: {x:emptyCell.x, y:emptyCell.y + 1},
+        RIGHT: {x:emptyCell.x - 1, y:emptyCell.y},
+        DOWN: {x:emptyCell.x, y:emptyCell.y - 1}
+      };
+      return directions[keyCodes[key]];
     }
   });
 }
