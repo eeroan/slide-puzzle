@@ -36,15 +36,18 @@ function initKeyEvent(table, boxInfo) {
     }
     function getMovableBox(key) {
       var keyCodes = {37:'LEFT', 38:'UP', 39:'RIGHT', 40:'DOWN'};
-      var directions = {
-        LEFT: {x:emptyCell.x + 1, y:emptyCell.y},
-        UP: {x:emptyCell.x, y:emptyCell.y + 1},
-        RIGHT: {x:emptyCell.x - 1, y:emptyCell.y},
-        DOWN: {x:emptyCell.x, y:emptyCell.y - 1}
-      };
-      return directions[keyCodes[key]];
+      return neighboursOf(emptyCell)[keyCodes[key]];
     }
   });
+}
+
+function neighboursOf(point) {
+  return {
+    LEFT: {x:point.x + 1, y:point.y},
+    UP: {x:point.x, y:point.y + 1},
+    RIGHT: {x:point.x - 1, y:point.y},
+    DOWN: {x:point.x, y:point.y - 1}
+  }
 }
 
 function initClickEvent(table, boxInfo) {
@@ -97,13 +100,7 @@ function isDone(table) {
 function findNextToFree(old, grid, table) {
   var x = old.x;
   var y = old.y;
-  var sides = [
-    {x:x, y:y + 1},
-    {x:x + 1, y:y},
-    {x:x, y:y - 1},
-    {x:x - 1, y:y}
-  ];
-
+  var sides = neighboursOf(old);
   for (var i in sides) {
     var side = sides[i];
     if(!isOutOfBounds(side, grid) && table[side.x][side.y] == null) return side;
