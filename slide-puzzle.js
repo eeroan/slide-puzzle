@@ -1,5 +1,4 @@
-//TODO game reset, theme, difficulty, levels, high score, timer, moves 
-var lastBox;
+//TODO game reset, theme, difficulty, levels, high score, timer, moves, mouse over
 var emptyCell;
 
 init({image:'Koala.jpg', split:3});
@@ -55,28 +54,27 @@ function initClickEvent(table, boxInfo) {
     var box = $(e.target);
     if (box.hasClass('box')) {
       var from = box.data('pos');
-      var to = findNextToFree(from, boxInfo.gridSize, table);
+      var to = findNextToFree(from, boxInfo.gridSize, table.grid);
       if (to) moveBox(from, to, table, boxInfo)
     }
   });
 }
 
-function moveBox(from, to, table, boxInfo) {
+function moveBox(from, to, tableObj, boxInfo) {
+  var table = tableObj.grid;
   var box = table[from.x][from.y];
   table[to.x][to.y] = box;
   table[from.x][from.y] = null;
   emptyCell = from;
   box.animate(pos(to, boxInfo.boxSize), 300, validate).data('pos', to);
   function validate() {
-    if (isDone(table)) gameCompleted(boxInfo);
+    if (isDone(table)) gameCompleted(boxInfo, tableObj.hiddenBox);
   }
 }
 
-function gameCompleted(boxInfo) {
+function gameCompleted(boxInfo, hiddenBox) {
   var end = boxInfo.gridSize;
-  lastBox.css(pos({x:end.x - 1,y:end.y - 1}, boxInfo.boxSize)).hide();
-  getBoard().append(lastBox);
-  lastBox.fadeIn(2000, function() {
+  hiddenBox.css(pos({x:end.x - 1,y:end.y - 1}, boxInfo.boxSize)).hide().appendTo(getBoard()).fadeIn(2000, function() {
     alert("Congratulations! Play again?");
     document.location = document.location.href;
   });
@@ -98,8 +96,6 @@ function isDone(table) {
 }
 
 function findNextToFree(old, grid, table) {
-  var x = old.x;
-  var y = old.y;
   var sides = neighboursOf(old);
   for (var i in sides) {
     var side = sides[i];
@@ -114,7 +110,8 @@ function isOutOfBounds(box, grid) {
 
 function createTable(boardDim, boxInfo) {
   var board = getBoard(boardDim).width(boardDim.x).height(boardDim.y);
-  var boxes = getBoxesExceptLast(boxInfo);
+  var boxes = getBoxes(boxInfo);
+  var hiddenBox = boxes.pop();
   var table = [];
   for (var x = 0; x < boxInfo.gridSize.x; x++) {
     table[x] = [];
@@ -130,17 +127,16 @@ function createTable(boardDim, boxInfo) {
       }
     }
   }
-  return table;
+  return {grid:table, hiddenBox: hiddenBox};
 }
 
-function getBoxesExceptLast(boxInfo) {
+function getBoxes(boxInfo) {
   var boxes = [];
   for (var x = 0; x < boxInfo.gridSize.x; x++) {
     for (var y = 0; y < boxInfo.gridSize.y; y++) {
       boxes.push(createBox(x, y, boxInfo));
     }
   }
-  lastBox = boxes.pop();
   return boxes;
 }
 
