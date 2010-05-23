@@ -1,0 +1,13 @@
+body {
+  font-family: "Tahoma", sans-serif;
+}
+
+#board {
+  background: #ccc;
+  position: relative;
+}
+
+.box {
+  background-repeat: no-repeat;
+  position: absolute;
+}
