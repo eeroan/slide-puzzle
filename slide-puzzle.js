@@ -5,7 +5,7 @@ init({image:'Koala.jpg', split:3});
 
 function afterImageIsLoaded(image, callBack) {
   setTimeout(function() {
-    if (image.width) callBack({x:image.width, y:image.height});
+    if(image.width) callBack({x:image.width, y:image.height});
     else afterImageIsLoaded(image, callBack);
   }, 13);
 }
@@ -22,7 +22,7 @@ function init(opts) {
     initClickEvent(table, boxInfo);
     initKeyEvent(table, boxInfo);
     function divideFor(axis) {
-      return parseInt(board[axis] / boxInfo.gridSize[axis])
+      return parseInt(board[axis]/boxInfo.gridSize[axis])
     }
   });
 }
@@ -30,7 +30,7 @@ function init(opts) {
 function initKeyEvent(table, boxInfo) {
   $(document).keyup(function(e) {
     var movableBox = getMovableBox(e.keyCode);
-    if (movableBox && !isOutOfBounds(movableBox, boxInfo.gridSize)) {
+    if(movableBox && !isOutOfBounds(movableBox, boxInfo.gridSize)) {
       moveBox(movableBox, emptyCell, table, boxInfo);
     }
     function getMovableBox(key) {
@@ -52,10 +52,10 @@ function neighboursOf(point) {
 function initClickEvent(table, boxInfo) {
   getBoard().click(function(e) {
     var box = $(e.target);
-    if (box.hasClass('box')) {
+    if(box.hasClass('box')) {
       var from = box.data('pos');
       var to = findNextToFree(from, boxInfo.gridSize, table.grid);
-      if (to) moveBox(from, to, table, boxInfo)
+      if(to) moveBox(from, to, table, boxInfo)
     }
   });
 }
@@ -68,7 +68,7 @@ function moveBox(from, to, tableObj, boxInfo) {
   emptyCell = from;
   box.animate(pos(to, boxInfo.boxSize), 300, validate).data('pos', to);
   function validate() {
-    if (isDone(table)) gameCompleted(boxInfo, tableObj.hiddenBox);
+    if(isDone(table)) gameCompleted(boxInfo, tableObj.hiddenBox);
   }
 }
 
@@ -81,12 +81,12 @@ function gameCompleted(boxInfo, hiddenBox) {
 }
 
 function isDone(table) {
-  for (var x in table) {
-    for (var y in table[x]) {
+  for(var x in table) {
+    for(var y in table[x]) {
       var slot = table[x][y];
-      if (slot) {
+      if(slot) {
         var box = slot.data('origPos');
-        if (box.x != x || box.y != y) {
+        if(box.x != x || box.y != y) {
           return false;
         }
       }
@@ -97,7 +97,7 @@ function isDone(table) {
 
 function findNextToFree(old, grid, table) {
   var sides = neighboursOf(old);
-  for (var i in sides) {
+  for(var i in sides) {
     var side = sides[i];
     if(!isOutOfBounds(side, grid) && table[side.x][side.y] == null) return side;
   }
@@ -113,10 +113,10 @@ function createTable(boardDim, boxInfo) {
   var boxes = getBoxes(boxInfo);
   var hiddenBox = boxes.pop();
   var table = [];
-  for (var x = 0; x < boxInfo.gridSize.x; x++) {
+  for(var x = 0; x < boxInfo.gridSize.x; x++) {
     table[x] = [];
-    for (var y = 0; y < boxInfo.gridSize.y; y++) {
-      if (boxes.length) {
+    for(var y = 0; y < boxInfo.gridSize.y; y++) {
+      if(boxes.length) {
         var slot = {x:x, y:y};
         var box = boxes.pop().css(pos(slot, boxInfo.boxSize)).data('pos', slot);
         board.append(box);
@@ -132,8 +132,8 @@ function createTable(boardDim, boxInfo) {
 
 function getBoxes(boxInfo) {
   var boxes = [];
-  for (var x = 0; x < boxInfo.gridSize.x; x++) {
-    for (var y = 0; y < boxInfo.gridSize.y; y++) {
+  for(var x = 0; x < boxInfo.gridSize.x; x++) {
+    for(var y = 0; y < boxInfo.gridSize.y; y++) {
       boxes.push(createBox(x, y, boxInfo));
     }
   }
@@ -143,13 +143,13 @@ function getBoxes(boxInfo) {
 function createBox(x, y, boxInfo) {
   with(boxInfo) {
     return $('<div>').addClass('box').width(boxSize.x).height(boxSize.y)
-      .css('background', 'url(' + image + ') -' + (x * boxSize.x) + 'px -' + (y * boxSize.y) + 'px')
+      .css('background', 'url(' + image + ') -' + (x*boxSize.x) + 'px -' + (y*boxSize.y) + 'px')
       .data('origPos', {x:x, y:y});
   }
 }
 
 function pos(slot, size) {
-  return {left:(slot.x * size.x) + 'px',top:(slot.y * size.y) + 'px'}
+  return {left:(slot.x*size.x) + 'px',top:(slot.y*size.y) + 'px'}
 }
 
 function getBoard(board) {
