@@ -11,3 +11,7 @@ body {
   background-repeat: no-repeat;
   position: absolute;
 }
+
+.imgHolder {
+  display: none;
+}
