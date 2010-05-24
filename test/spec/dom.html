@@ -1,18 +1,17 @@
 <html>
 <head>
   <link type="text/css" rel="stylesheet" href="../lib/jspec.css"/>
+  <link type="text/css" rel="stylesheet" href="../../main/slide-puzzle.css"/>
   <script src="../lib/jspec.js"></script>
   <script src="../../main/jquery-1.4.2.js"></script>
   <script src="../lib/jspec.jquery.js"></script>
   <script src="../lib/jspec.xhr.js"></script>
   <script src="../../main/slide-puzzle.js"></script>
   <script src="unit/spec.helper.js"></script>
+  <script src="unit/spec.slide-puzzle.js"></script>
   <script>
     function runSuites() {
-      JSpec
-              .exec('unit/spec.slide-puzzle.js')
-              .run({ fixturePath: 'fixture', verbose:true })
-              .report()
+      JSpec.run({ fixturePath: 'fixture', verbose:true }).report();
     }
   </script>
 </head>
@@ -24,5 +23,6 @@
 </div>
 <div id="jspec"></div>
 <div id="jspec-bottom"></div>
+<div id="board"></div>
 </body>
 </html>
