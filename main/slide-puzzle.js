@@ -6,23 +6,29 @@ $.fn.slidePuzzle = function(opts) {
   init(opts);
 
   function init(opts) {
-    container.append('<img src="' + opts.image + '" class="imgHolder"/>');
-    $('.imgHolder', container).load(function() {
-      var image = $('.imgHolder', container).get(0);
-      var board = {x:image.width, y:image.height};
-      var boxInfo = {};
-      boxInfo.gridSize = {x:opts.split, y:opts.split};
-      boxInfo.boxSize = {x:divideFor('x'), y:divideFor('y')};
-      boxInfo.image = opts.image;
-      var table = createTable(board, boxInfo);
-      initClickEvent(table, boxInfo);
-      initKeyEvent(table, boxInfo);
-      function divideFor(axis) {
-        return parseInt(board[axis]/boxInfo.gridSize[axis])
-      }
-    });
+    if(opts.width && opts.height) {
+      initWithImageDimensions(opts, {x:opts.width, y:opts.height});
+    } else {
+      container.append('<img src="' + opts.image + '" class="imgHolder"/>');
+      $('.imgHolder', container).load(function() {
+        var image = $('.imgHolder', container).get(0);
+        var board = {x:image.width, y:image.height};
+        initWithImageDimensions(opts, board);
+      });
+    }
+  }
 
-    return this;
+  function initWithImageDimensions(opts, board) {
+    var boxInfo = {};
+    boxInfo.gridSize = {x:opts.split, y:opts.split};
+    boxInfo.boxSize = {x:divideFor('x'), y:divideFor('y')};
+    boxInfo.image = opts.image;
+    var table = createTable(board, boxInfo);
+    initClickEvent(table, boxInfo);
+    initKeyEvent(table, boxInfo);
+    function divideFor(axis) {
+      return parseInt(board[axis]/boxInfo.gridSize[axis])
+    }
   }
 
   function initKeyEvent(table, boxInfo) {

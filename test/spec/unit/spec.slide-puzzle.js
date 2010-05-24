@@ -1,8 +1,7 @@
 JSpec.describe('slide-puzzle', function() {
   before_each(function() {
-    ctx = $('#board');
-    ctx.empty();
-    ctx.slidePuzzle({image:'../../main/Koala.jpg', split:3});
+    ctx = $('<div>').attr('id','board');
+    ctx.slidePuzzle({image:'../../main/Koala.jpg', split:3, width:600, height:450});
   });
 
   describe('when initializing', function() {

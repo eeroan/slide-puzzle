@@ -10,12 +10,12 @@
   <script src="unit/spec.helper.js"></script>
   <script src="unit/spec.slide-puzzle.js"></script>
   <script>
-    function runSuites() {
+    $(function() {
       JSpec.run({ fixturePath: 'fixture', verbose:true }).report();
-    }
+    });
   </script>
 </head>
-<body class="jspec" onLoad="runSuites();">
+<body class="jspec" >
 <div id="jspec-top">
   <h2 id="jspec-title">JSpec <em>
     <script>document.write(JSpec.version)</script>
@@ -23,6 +23,5 @@
 </div>
 <div id="jspec"></div>
 <div id="jspec-bottom"></div>
-<div id="board"></div>
 </body>
 </html>
