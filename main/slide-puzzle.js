@@ -32,7 +32,8 @@ $.fn.slidePuzzle = function(opts) {
   }
 
   function initKeyEvent(table, boxInfo) {
-    $(document).keyup(function(e) {
+    var keyPress = $(document).toObservable('keyup');
+    keyPress.Subscribe(function(e) {
       var movableBox = getMovableBox(e.keyCode);
       if(movableBox && !isOutOfBounds(movableBox, boxInfo.gridSize)) {
         moveBox(movableBox, emptyCell, table, boxInfo);
@@ -54,7 +55,8 @@ $.fn.slidePuzzle = function(opts) {
   }
 
   function initClickEvent(table, boxInfo) {
-    getBoard().click(function(e) {
+    var click = getBoard().toObservable('click');
+    click.Subscribe(function(e) {
       var box = $(e.target);
       if(box.hasClass('box')) {
         var from = box.data('pos');
