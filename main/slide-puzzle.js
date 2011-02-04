@@ -9,7 +9,7 @@ $.fn.slidePuzzle = function(opts) {
     if(opts.width && opts.height) {
       initWithImageDimensions(opts, {x:opts.width, y:opts.height});
     } else {
-      container.append('<img src="' + opts.image + '" class="imgHolder"/>');
+      container.append('<img>', {src:opts.image,class:imgHolder});
       $('.imgHolder', container).load(function() {
         var image = $('.imgHolder', container).get(0);
         var board = {x:image.width, y:image.height};
