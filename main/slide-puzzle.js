@@ -39,27 +39,38 @@ $.fn.slidePuzzle = function(opts) {
     }
   }
 
+
   function initEvents(table, boxInfo) {
-    var click = getBoard().toObservable('click');
-    click.Subscribe(function(e) {
-      var box = $(e.target);
-      if(box.hasClass('box')) {
-        var from = box.data('pos');
-        var to = findNextToFree(from, boxInfo.gridSize, table.grid);
-        if(to) moveBox(from, to, table, boxInfo)
+    var click = getBoard().toObservable('click').Select(eventTarget).Where(isBox).Select(boxPosition);
+    var keyPress = $(document).toObservable('keyup').Select(function(e) {return getMovableBox(e.keyCode)});
+
+    click.Subscribe(function(from) {
+      if (findNextToFree(from, boxInfo.gridSize, table.grid)) {
+        moveBox(from, emptyCell, table, boxInfo)
       }
     });
-    var keyPress = $(document).toObservable('keyup');
-    keyPress.Subscribe(function(e) {
-      var movableBox = getMovableBox(e.keyCode);
-      if(movableBox && !isOutOfBounds(movableBox, boxInfo.gridSize)) {
-        moveBox(movableBox, emptyCell, table, boxInfo);
-      }
-      function getMovableBox(key) {
-        var keyCodes = {37:'LEFT', 38:'UP', 39:'RIGHT', 40:'DOWN'};
-        return neighboursOf(emptyCell)[keyCodes[key]];
+
+    keyPress.Subscribe(function(from) {
+      if(from && !isOutOfBounds(from, boxInfo.gridSize)) {
+        moveBox(from, emptyCell, table, boxInfo);
       }
     });
+    function getMovableBox(key) {
+      var keyCodes = {37:'LEFT', 38:'UP', 39:'RIGHT', 40:'DOWN'};
+      return neighboursOf(emptyCell)[keyCodes[key]];
+    }
+
+    function isBox(box) {
+      return box.hasClass('box')
+    }
+
+    function boxPosition(box) {
+      return box.data('pos')
+    }
+
+    function eventTarget(e) {
+      return $(e.target)
+    }
   }
 
   function moveBox(from, to, tableObj, boxInfo) {
