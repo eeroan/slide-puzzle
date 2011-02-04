@@ -24,25 +24,10 @@ $.fn.slidePuzzle = function(opts) {
     boxInfo.boxSize = {x:divideFor('x'), y:divideFor('y')};
     boxInfo.image = opts.image;
     var table = createTable(board, boxInfo);
-    initClickEvent(table, boxInfo);
-    initKeyEvent(table, boxInfo);
+    initEvents(table, boxInfo);
     function divideFor(axis) {
       return parseInt(board[axis]/boxInfo.gridSize[axis])
     }
-  }
-
-  function initKeyEvent(table, boxInfo) {
-    var keyPress = $(document).toObservable('keyup');
-    keyPress.Subscribe(function(e) {
-      var movableBox = getMovableBox(e.keyCode);
-      if(movableBox && !isOutOfBounds(movableBox, boxInfo.gridSize)) {
-        moveBox(movableBox, emptyCell, table, boxInfo);
-      }
-      function getMovableBox(key) {
-        var keyCodes = {37:'LEFT', 38:'UP', 39:'RIGHT', 40:'DOWN'};
-        return neighboursOf(emptyCell)[keyCodes[key]];
-      }
-    });
   }
 
   function neighboursOf(point) {
@@ -54,7 +39,7 @@ $.fn.slidePuzzle = function(opts) {
     }
   }
 
-  function initClickEvent(table, boxInfo) {
+  function initEvents(table, boxInfo) {
     var click = getBoard().toObservable('click');
     click.Subscribe(function(e) {
       var box = $(e.target);
@@ -62,6 +47,17 @@ $.fn.slidePuzzle = function(opts) {
         var from = box.data('pos');
         var to = findNextToFree(from, boxInfo.gridSize, table.grid);
         if(to) moveBox(from, to, table, boxInfo)
+      }
+    });
+    var keyPress = $(document).toObservable('keyup');
+    keyPress.Subscribe(function(e) {
+      var movableBox = getMovableBox(e.keyCode);
+      if(movableBox && !isOutOfBounds(movableBox, boxInfo.gridSize)) {
+        moveBox(movableBox, emptyCell, table, boxInfo);
+      }
+      function getMovableBox(key) {
+        var keyCodes = {37:'LEFT', 38:'UP', 39:'RIGHT', 40:'DOWN'};
+        return neighboursOf(emptyCell)[keyCodes[key]];
       }
     });
   }
