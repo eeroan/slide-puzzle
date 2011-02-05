@@ -26,7 +26,7 @@ $.fn.slidePuzzle = function(opts) {
     var table = createTable(board, boxInfo)
     initEvents(table, boxInfo)
     function divideFor(axis) {
-      return parseInt(board[axis]/boxInfo.gridSize[axis])
+      return parseInt(board[axis] / boxInfo.gridSize[axis])
     }
   }
 
@@ -39,13 +39,14 @@ $.fn.slidePuzzle = function(opts) {
     }
   }
 
-
   function initEvents(table, boxInfo) {
     var click = getBoard().toObservable('click').Select(eventTarget).Where(isBox).Select(boxPosition)
-    var keyPress = $(document).toObservable('keyup').Select(function(e) {return getMovableBox(e.keyCode)})
+    var keyPress = $(document).toObservable('keyup').Select(function(e) {
+      return getMovableBox(e.keyCode)
+    })
 
     click.Subscribe(function(from) {
-      if (findNextToFree(from, boxInfo.gridSize, table.grid)) {
+      if(findNextToFree(from, boxInfo.gridSize, table.grid)) {
         moveBox(from, emptyCell, table, boxInfo)
       }
     })
@@ -156,13 +157,13 @@ $.fn.slidePuzzle = function(opts) {
   function createBox(x, y, boxInfo) {
     with(boxInfo) {
       return $('<div>').addClass('box').width(boxSize.x).height(boxSize.y)
-        .css('background', 'url(' + image + ') -' + (x*boxSize.x) + 'px -' + (y*boxSize.y) + 'px')
+        .css('background', 'url(' + image + ') -' + (x * boxSize.x) + 'px -' + (y * boxSize.y) + 'px')
         .data('origPos', {x:x, y:y})
     }
   }
 
   function pos(slot, size) {
-    return {left:(slot.x*size.x) + 'px',top:(slot.y*size.y) + 'px'}
+    return {left:(slot.x * size.x) + 'px',top:(slot.y * size.y) + 'px'}
   }
 
   function getBoard() {
