@@ -40,23 +40,18 @@ $.fn.slidePuzzle = function(opts) {
   }
 
   function initEvents(table, boxInfo) {
-    var click = getBoard().toObservable('click').Select(eventTarget).Where(isBox).Select(boxPosition)
-    var keyPress = $(document).toObservable('keyup').Select(getMovableBox)
+    var click = getBoard().toObservable('click').Select(eventTarget).Where(isBox).Select(boxPosition).Where(findNextToFree)
+    var keyPress = $(document).toObservable('keyup').Where(isArrowPress).Select(getMovableBox).Where(isInBounds)
+    click.Merge(keyPress).Subscribe(moveBox)
 
-    click.Subscribe(function(from) {
-      if(findNextToFree(from, boxInfo.gridSize, table.grid)) {
-        moveBox(from, emptyCell, table, boxInfo)
-      }
-    })
+    var keyCodes = {37:'LEFT', 38:'UP', 39:'RIGHT', 40:'DOWN'}
 
-    keyPress.Subscribe(function(from) {
-      if(from && isInBounds(from, boxInfo.gridSize)) {
-        moveBox(from, emptyCell, table, boxInfo)
-      }
-    })
+    function isArrowPress(e) {
+      return e.keyCode in keyCodes
+    }
+
     function getMovableBox(e) {
       var key = e.keyCode
-      var keyCodes = {37:'LEFT', 38:'UP', 39:'RIGHT', 40:'DOWN'}
       return neighboursOf(emptyCell)[keyCodes[key]]
     }
 
@@ -71,17 +66,32 @@ $.fn.slidePuzzle = function(opts) {
     function eventTarget(e) {
       return $(e.target)
     }
-  }
 
-  function moveBox(from, to, tableObj, boxInfo) {
-    var table = tableObj.grid
-    var box = table[from.x][from.y]
-    table[to.x][to.y] = box
-    table[from.x][from.y] = null
-    emptyCell = from
-    box.animate(pos(to, boxInfo.boxSize), 300, validate).data('pos', to)
-    function validate() {
-      if(isDone(table)) gameCompleted(boxInfo, tableObj.hiddenBox)
+    function moveBox(from) {
+      var to = emptyCell
+      var tableGrid = table.grid
+      var box = tableGrid[from.x][from.y]
+      tableGrid[to.x][to.y] = box
+      tableGrid[from.x][from.y] = null
+      emptyCell = from
+      box.animate(pos(to, boxInfo.boxSize), 300, validate).data('pos', to)
+      function validate() {
+        if(isDone(tableGrid)) gameCompleted(boxInfo, table.hiddenBox)
+      }
+    }
+
+    function findNextToFree(old) {
+      var sides = neighboursOf(old)
+      for(var i in sides) {
+        var side = sides[i]
+        if(isInBounds(side, boxInfo.gridSize) && table.grid[side.x][side.y] == null) return side
+      }
+      return null
+    }
+
+    function isInBounds(box) {
+      var grid = boxInfo.gridSize
+      return box.x >= 0 && box.x < grid.x && box.y >= 0 && box.y < grid.y
     }
   }
 
@@ -106,19 +116,6 @@ $.fn.slidePuzzle = function(opts) {
       }
     }
     return true
-  }
-
-  function findNextToFree(old, grid, table) {
-    var sides = neighboursOf(old)
-    for(var i in sides) {
-      var side = sides[i]
-      if(isInBounds(side, grid) && table[side.x][side.y] == null) return side
-    }
-    return null
-  }
-
-  function isInBounds(box, grid) {
-    return box.x >= 0 && box.x < grid.x && box.y >= 0 && box.y < grid.y
   }
 
   function createTable(boardDim, boxInfo) {
