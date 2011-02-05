@@ -50,7 +50,7 @@ $.fn.slidePuzzle = function(opts) {
     })
 
     keyPress.Subscribe(function(from) {
-      if(from && !isOutOfBounds(from, boxInfo.gridSize)) {
+      if(from && isInBounds(from, boxInfo.gridSize)) {
         moveBox(from, emptyCell, table, boxInfo)
       }
     })
@@ -112,13 +112,13 @@ $.fn.slidePuzzle = function(opts) {
     var sides = neighboursOf(old)
     for(var i in sides) {
       var side = sides[i]
-      if(!isOutOfBounds(side, grid) && table[side.x][side.y] == null) return side
+      if(isInBounds(side, grid) && table[side.x][side.y] == null) return side
     }
     return null
   }
 
-  function isOutOfBounds(box, grid) {
-    return box.x < 0 || box.x >= grid.x || box.y < 0 || box.y >= grid.y
+  function isInBounds(box, grid) {
+    return box.x >= 0 && box.x < grid.x && box.y >= 0 && box.y < grid.y
   }
 
   function createTable(boardDim, boxInfo) {
