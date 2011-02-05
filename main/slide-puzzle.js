@@ -41,9 +41,7 @@ $.fn.slidePuzzle = function(opts) {
 
   function initEvents(table, boxInfo) {
     var click = getBoard().toObservable('click').Select(eventTarget).Where(isBox).Select(boxPosition)
-    var keyPress = $(document).toObservable('keyup').Select(function(e) {
-      return getMovableBox(e.keyCode)
-    })
+    var keyPress = $(document).toObservable('keyup').Select(getMovableBox)
 
     click.Subscribe(function(from) {
       if(findNextToFree(from, boxInfo.gridSize, table.grid)) {
@@ -56,7 +54,8 @@ $.fn.slidePuzzle = function(opts) {
         moveBox(from, emptyCell, table, boxInfo)
       }
     })
-    function getMovableBox(key) {
+    function getMovableBox(e) {
+      var key = e.keyCode
       var keyCodes = {37:'LEFT', 38:'UP', 39:'RIGHT', 40:'DOWN'}
       return neighboursOf(emptyCell)[keyCodes[key]]
     }
