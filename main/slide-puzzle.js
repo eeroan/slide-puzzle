@@ -1,5 +1,12 @@
 //TODO theme, difficulty, levels, high score, timer, moves, mouse over
-
+Function.prototype.f = function() {
+  var fun = this
+  var args = arguments
+  return function(_this) {
+    return fun.apply(_this, args)
+  }
+}
+_ = $.fn
 $.fn.slidePuzzle = function(opts) {
   var emptyCell
   var container = this
@@ -40,7 +47,7 @@ $.fn.slidePuzzle = function(opts) {
   }
 
   function initEvents(table, boxInfo) {
-    var click = getBoard().toObservable('click').Select(eventTarget).Where(isBox).Select(boxPosition).Where(findNextToFree)
+    var click = getBoard().toObservable('click').Select(eventTarget).Where(_.hasClass.f('box')).Select(_.data.f('pos')).Where(findNextToFree)
     var keyPress = $(document).toObservable('keyup').Where(isArrowPress).Select(getMovableBox).Where(isInBounds)
     click.Merge(keyPress).Subscribe(moveBox)
 
