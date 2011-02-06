@@ -1,12 +1,11 @@
 //TODO theme, difficulty, levels, high score, timer, moves, mouse over
 Function.prototype.f = function() {
-  var fun = this
+  var func = this
   var args = arguments
   return function(_this) {
-    return fun.apply(_this, args)
+    return func.apply(_this, args)
   }
 }
-_ = $.fn
 $.fn.slidePuzzle = function(opts) {
   var emptyCell
   var container = this
@@ -47,12 +46,10 @@ $.fn.slidePuzzle = function(opts) {
   }
 
   function initEvents(table, boxInfo) {
-    var click = getBoard().toObservable('click').Select(eventTarget).Where(_.hasClass.f('box')).Select(_.data.f('pos')).Where(findNextToFree)
+    var click = getBoard().toObservable('click').Select(eventTarget).Where($.fn.hasClass.f('box')).Select($.fn.data.f('pos')).Where(findNextToFree)
     var keyPress = $(document).toObservable('keyup').Where(isArrowPress).Select(getMovableBox).Where(isInBounds)
     click.Merge(keyPress).Subscribe(moveBox)
-
     var keyCodes = {37:'LEFT', 38:'UP', 39:'RIGHT', 40:'DOWN'}
-
     function isArrowPress(e) {
       return e.keyCode in keyCodes
     }
@@ -60,14 +57,6 @@ $.fn.slidePuzzle = function(opts) {
     function getMovableBox(e) {
       var key = e.keyCode
       return neighboursOf(emptyCell)[keyCodes[key]]
-    }
-
-    function isBox(box) {
-      return box.hasClass('box')
-    }
-
-    function boxPosition(box) {
-      return box.data('pos')
     }
 
     function eventTarget(e) {
