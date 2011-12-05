@@ -1,0 +1,27 @@
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="../lib/jspec.css"/>
+  <link type="text/css" rel="stylesheet" href="../../main/slide-puzzle.css"/>
+  <script src="../lib/jspec.js"></script>
+  <script src="../../main/lib/jquery-1.4.2.js"></script>
+  <script src="../lib/jspec.jquery.js"></script>
+  <script src="../lib/jspec.xhr.js"></script>
+  <script src="../../main/slide-puzzle.js"></script>
+  <script src="unit/spec.helper.js"></script>
+  <script src="unit/spec.slide-puzzle.js"></script>
+  <script>
+    $(function() {
+      JSpec.run({ fixturePath: 'fixture', verbose:true }).report();
+    });
+  </script>
+</head>
+<body class="jspec" >
+<div id="jspec-top">
+  <h2 id="jspec-title">JSpec <em>
+    <script>document.write(JSpec.version)</script>
+  </em></h2>
+</div>
+<div id="jspec"></div>
+<div id="jspec-bottom"></div>
+</body>
+</html>

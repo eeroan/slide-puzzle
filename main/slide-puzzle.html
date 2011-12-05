@@ -1,0 +1,19 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Slide puzzle</title>
+  <link rel="stylesheet" type="text/css" href="slide-puzzle.css"/>
+</head>
+<body>
+<p>Use arrows or mouse click to move boxes.</p>
+
+<div id="board"></div>
+<script type="text/javascript" src="lib/jquery-1.4.2.js"></script>
+<script type="text/javascript" src="lib/rx.js"></script>
+<script type="text/javascript" src="lib/rx.jQuery.js"></script>
+<script type="text/javascript" src="slide-puzzle.js"></script>
+<script type="text/javascript">
+  $('#board').slidePuzzle({image:'Koala.jpg', split:3, width:600, height:450});
+</script>
+
+</body>
+</html>
